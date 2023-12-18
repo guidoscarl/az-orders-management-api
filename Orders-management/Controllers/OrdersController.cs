@@ -28,15 +28,21 @@ namespace Orders_management.Controllers
 
         [HttpGet("details")]
         // GET: OrdersController/Details/5
-        public Order Details(String id)
+        public IActionResult Details(string orderCode)
         {
-            return new Order()
+            var order = _orderService.GetOrder(orderCode);
+            if(order == null)
             {
-                OrderCode = id,
-                ProductName = "Name",
-                Type = OrdersTypeEnum.TECH.ToString(),
-                Price = 20m
-            };
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
+
+        [HttpGet("user-orders")]
+        public IEnumerable<Order> GetOrdersByUser(string username)
+        {
+            return _orderService.GetOrdersByUsername(username);
         }
 
         [HttpPost]

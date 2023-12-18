@@ -21,7 +21,7 @@ namespace Orders_management.Services.Implementation
             {
                 Price = o.Price,
                 ProductName = o.ProductName,
-                Type = o.Type,
+                Type = o.Type.ToString(),
                 UserName = o.UserName,
                 OrderCode = Guid.NewGuid() + o.UserName
             };
@@ -40,6 +40,11 @@ namespace Orders_management.Services.Implementation
         public IEnumerable<Order> GetOrders()
         {
             return _dbContext.Orders.ToList();
+        }
+
+        public IEnumerable<Order> GetOrdersByUsername(string userName)
+        {
+            return _dbContext.Orders.Where(order => order.UserName == userName);
         }
     }
 }

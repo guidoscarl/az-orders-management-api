@@ -8,5 +8,6 @@ namespace Orders_management.Services
         void CreateOrder(CreateOrderDTO o);
         Order GetOrder(string orderCode);
         IEnumerable<Order> GetOrders();
+        IEnumerable<Order> GetOrdersByUsername(string userName);
     }
 }
