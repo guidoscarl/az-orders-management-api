@@ -20,7 +20,6 @@ namespace Orders_management.Controllers
         }
 
         [HttpGet]
-
         public IEnumerable<Order> Index()
         {
             return _orderService.GetOrders();

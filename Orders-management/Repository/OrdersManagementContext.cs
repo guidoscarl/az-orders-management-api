@@ -8,6 +8,7 @@ namespace Orders_management.Repository
     {
         public string ConnectionString { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Product> Products { get; set; }
         public OrdersManagementContext(DbContextOptions<OrdersManagementContext> options):
             base(options) { }
 
@@ -15,6 +16,9 @@ namespace Orders_management.Repository
         {
             modelBuilder.Entity<Order>().ToContainer("OrderContainer")
                 .HasPartitionKey(order => order.OrderCode);
+
+            modelBuilder.Entity<Product>().ToContainer("ProductContainer")
+                .HasPartitionKey(product => product.ProductCode);
         }
     }
 }

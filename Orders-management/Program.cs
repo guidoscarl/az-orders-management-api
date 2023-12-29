@@ -24,6 +24,7 @@ builder.Services.AddDbContext<OrdersManagementContext>(options => options.UseCos
     ));
 
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IServiceBusMessageHandler, ServiceBusMessageHandler>();
 builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"));
 var app = builder.Build();

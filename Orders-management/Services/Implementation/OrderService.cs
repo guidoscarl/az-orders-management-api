@@ -23,16 +23,16 @@ namespace Orders_management.Services.Implementation
                 ProductName = o.ProductName,
                 Type = o.Type.ToString(),
                 UserName = o.UserName,
-                OrderCode = Guid.NewGuid() + o.UserName
+                OrderCode = Guid.NewGuid() + o.UserName,
             };
 
-            _dbContext.Orders.Add(order);
+            //_dbContext.Orders.Add(order);
 
-            _dbContext.SaveChanges();
+            //_dbContext.SaveChanges();
             _messageHandler.SendOrderMessage(order);
         }
 
-        public Order GetOrder(string orderCode)
+        public Order? GetOrder(string orderCode)
         {
             return _dbContext.Orders.Where(o => o.OrderCode == orderCode).FirstOrDefault();
         }
