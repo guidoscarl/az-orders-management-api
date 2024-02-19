@@ -26,9 +26,9 @@ namespace Orders_management.Services.Implementation
                 OrderCode = Guid.NewGuid() + o.UserName,
             };
 
-            //_dbContext.Orders.Add(order);
+            _dbContext.Orders.Add(order);
 
-            //_dbContext.SaveChanges();
+            _dbContext.SaveChanges();
             _messageHandler.SendOrderMessage(order);
         }
 
