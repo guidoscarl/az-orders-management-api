@@ -1,4 +1,6 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
 using Orders_management;
 using Orders_management.Repository;
 using Orders_management.Services;
@@ -27,6 +29,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IServiceBusMessageHandler, ServiceBusMessageHandler>();
 builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"));
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +38,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+   
+   builder.Configuration.AddAzureAppConfiguration(option => option.Connect(new Uri(builder.Configuration.GetConnectionString("AzureAppConfiguration")), new DefaultAzureCredential()).UseFeatureFlags());
+    
 }
 
 app.UseHttpsRedirection();

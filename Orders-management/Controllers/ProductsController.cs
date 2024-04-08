@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Orders_management.Enums;
 using Orders_management.Models;
 using Orders_management.Models.DTO;
@@ -12,6 +13,7 @@ namespace Orders_management.Controllers
     {
         private IProductService _productService;
 
+
         public ProductsController(IProductService productService)
         {
             _productService = productService;
@@ -20,19 +22,25 @@ namespace Orders_management.Controllers
         [HttpGet]
         public IEnumerable<Product> Get()
         {
-            return _productService.GetAllProducts();
+            return _productService.GetAllProducts().Result;
+        }
+
+        [HttpGet("blackFriday")]
+        public bool GetBlackFriday()
+        {
+            return _productService.GetBlackFriday().Result;
         }
 
         [HttpGet("type")]
         public IEnumerable<Product> GetByType(OrdersTypeEnum type)
         {
-            return _productService.GetByProductType(type);
+            return _productService.GetByProductType(type).Result;
         }
 
         [HttpGet("details")]
         public IActionResult GetByProductCode(string productCode)
         {
-            var product = _productService.GetProductByCode(productCode);
+            var product = _productService.GetProductByCode(productCode).Result;
             if(product == null)
             {
                 return NotFound();

@@ -7,8 +7,10 @@ namespace Orders_management.Services
     public interface IProductService
     {
         public void CreateProduct(ProductDTO productDTO);
-        public Product? GetProductByCode(string productCode);
-        public IEnumerable<Product> GetAllProducts();
-        public IEnumerable<Product> GetByProductType(OrdersTypeEnum type);
+        public Task<Product?> GetProductByCode(string productCode);
+        public Task<IEnumerable<Product>> GetAllProducts();
+
+        public Task<bool> GetBlackFriday();
+        public Task<IEnumerable<Product>> GetByProductType(OrdersTypeEnum type);
     }
 }
