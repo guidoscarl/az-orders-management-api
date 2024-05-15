@@ -30,8 +30,10 @@ namespace Orders_management.Services.Implementation
         {
             var sender = _client.CreateSender(_settings.ServiceBusTopicName);
 
-            ServiceBusMessage message = new ServiceBusMessage(order.ProductName);
-            message.CorrelationId = order.Type;
+            ServiceBusMessage message = new(order.ProductName)
+            {
+                CorrelationId = order.Type
+            };
             message.ApplicationProperties.Add("price", order.Price);
             message.ApplicationProperties.Add("userName", order.UserName);
             message.ApplicationProperties.Add("orderCode", order.OrderCode);

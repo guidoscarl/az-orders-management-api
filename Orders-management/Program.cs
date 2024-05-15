@@ -20,18 +20,38 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<OrdersManagementContext>(options => options.UseCosmos(
-        connectionString: builder.Configuration.GetConnectionString("CosmosDB"),
-        databaseName: "Order"
-    ));
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<OrdersManagementContext>(options => options.UseCosmos(
+            connectionString: builder.Configuration.GetConnectionString("CosmosDB"),
+            databaseName: "Order"
+        ));
+}
+else
+{
+    builder.Services.AddDbContext<OrdersManagementContext>(options => options.UseCosmos(
+            accountEndpoint: builder.Configuration.GetSection("Settings").GetValue(typeof(string), "CosmosDBEndpoint").ToString(),
+            new ManagedIdentityCredential(),
+            databaseName: "Order"
+        ));
+}
+
+
+builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"));
+builder.Services.AddFeatureManagement();
 
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IServiceBusMessageHandler, ServiceBusMessageHandler>();
-builder.Services.Configure<Settings>(builder.Configuration.GetSection("Settings"));
-builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddAzureAppConfiguration(option => option.Connect(new Uri(builder.Configuration.GetConnectionString("AzureAppConfiguration")), new DefaultAzureCredential()).UseFeatureFlags());
+    builder.Services.AddAzureAppConfiguration();
+}
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -41,9 +61,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-   
-   builder.Configuration.AddAzureAppConfiguration(option => option.Connect(new Uri(builder.Configuration.GetConnectionString("AzureAppConfiguration")), new DefaultAzureCredential()).UseFeatureFlags());
-    
+    app.UseAzureAppConfiguration();
 }
 
 app.UseHttpsRedirection();
